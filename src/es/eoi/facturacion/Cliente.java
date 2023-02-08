@@ -23,7 +23,7 @@ public class Cliente {
 
     public void datosClientes() {
         System.out.println("Cliente: \t" +
-                "nombre: \t" + nombre + " " + apellidos + '\n' +
+                "Nombre: \t" + nombre + " " + apellidos + '\n' +
                 "\t\t\t Dirección: \t" + direccion + '\n' +
                 "\t\t\t Contacto: \t" + contacto + '\n' +
                 "\t\t\t NIF: \t" + NIF);

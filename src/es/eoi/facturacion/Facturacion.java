@@ -34,28 +34,22 @@ public class Facturacion {
         Cliente cliente1 = new Cliente(nombre, apellidos, direccion, contacto, NIF);
 
 
-        //2. Lugar y fecha
+        //2. Lugar, fecha y hora
 
         String lugar = introduceDato("Lugar", entrada);
 
-        Locale locale = new Locale("es", "ES");
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
-        DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.DEFAULT, locale);
-        String fecha = dateFormat.format(new Date());
-        String hora = timeFormat.format(new Date());
-
-        //LocalDate fecha = LocalDate.now(ZoneId.of("Europe/Madrid"));
+        String fechaHora = fechaHoraHoy(); //Lo hacemos como método para que quede bonico
 
 
         //3. Nº factura
-        long numFactura = (long) (Math.random()*Math.pow(10,10));
+        //long numFactura = (long) (Math.random()*Math.pow(10,10)); //sólo números
+        String numFactura = numeroFactura(10); //este método usa letras y números
 
         //4. Lista de factura
         System.out.println("\n\n Introduce los productos: ");
         boolean seguirCobrando = true;
         Productos producto;
-        //LineaDeFactura[] facturaFinal = new LineaDeFactura[10];
-        List<LineaDeFactura> facturaFinal = new ArrayList(); //interfaz que crea un "array expandible" con cosas que los arrays normales no hacen
+        ArrayList<LineaDeFactura> facturaFinal = new ArrayList(); //interfaz que crea un "array expandible" con cosas que los arrays normales no hacen
         //hay que decirle de qué está compuesta (en este caso LineaDeFactura) porque el default es un objeto
 
         while (seguirCobrando) {
@@ -93,11 +87,12 @@ public class Facturacion {
         }
         entrada.close();
 
-        //5. Totales
+        //5. Imprimir factura
+
         System.out.println("\n----------------------------------------------------");
-        System.out.println("\n\n" + lugar + ", " + fecha + ", " + hora);
+        System.out.println("\n\n" + lugar + ", " + fechaHora);
         System.out.println("\n\nComercio: \t" +
-                "nombre: \t" + nombreComercio + '\n' +
+                "Nombre: \t" + nombreComercio + '\n' +
                 "\t\t\t Dirección: \t" + dirNegocio + '\n' +
                 "\t\t\t Contacto: \t" + tlf + '\n' +
                 "\t\t\t NIF: \t" + NIFNegocio);
@@ -114,8 +109,9 @@ public class Facturacion {
                 totalFactura += lin.getPrecioLinea();
         }
 
-        float tipoIVA = 21;
+        //Calcular e imprimir totales
 
+        float tipoIVA = 21;
         float IVA = totalFactura * tipoIVA / 100;
         float cantidadPagar = totalFactura + IVA;
 
@@ -125,11 +121,31 @@ public class Facturacion {
         System.out.println("\n\n");
 
         //System.out.printf() --> imprime con formato
-        //System.out.printf("A pagar = %.2f", cantidadPagar); //saca el número con dos decimales
+        //System.out.printf("A pagar = %.2f", cantidadPagar); //imp con formato: saca el número con dos decimales
     }
 
     public static String introduceDato(String mensaje, Scanner entrada) {
         System.out.print(mensaje + ": ");
         return entrada.nextLine();
+    }
+    public static String numeroFactura(int longitud){
+        String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        Random k = new Random();
+        String numero = "";
+        for (int i = 0; i < longitud; i++){
+            int aleatorio = k.nextInt(base.length());
+            numero += base.charAt(aleatorio);
+        }
+        return numero;
+    }
+
+    public static String fechaHoraHoy (){
+        Locale locale = new Locale("es", "ES");
+        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
+        DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.DEFAULT, locale);
+        String fecha = dateFormat.format(new Date());
+        String hora = timeFormat.format(new Date());
+
+        return fecha + ", " + hora;
     }
 }

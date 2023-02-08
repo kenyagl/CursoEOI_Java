@@ -18,18 +18,6 @@ public class LineaDeFactura {
                 precioUn + "\t" + precioLinea;
     }
 
-    public int getUnidades() {
-        return unidades;
-    }
-
-    public String getNombreCacharro() {
-        return nombreCacharro;
-    }
-
-    public float getPrecioUn() {
-        return precioUn;
-    }
-
     public float getPrecioLinea() {
         return precioLinea;
     }
