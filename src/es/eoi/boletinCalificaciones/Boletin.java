@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Boletin {
     public static void main(String[] args) {
@@ -15,12 +17,33 @@ public class Boletin {
 
         //Introducir datos alumno por consola
         Scanner entrada = new Scanner(System.in);
-        String nombre = introduceDato("Introduzca el nombre del alumno", entrada);
-        String apellidos = introduceDato("Introduzca los apellidos del alumno", entrada);
-        String direccion = introduceDato("Introduzca la dirección del alumno", entrada);
-        String contacto = introduceDato("Introduzca el email del alumno", entrada);
-        String grupo = introduceDato("Introduzca el grupo del alumno", entrada);
 
+        //Nombre y apellidos
+
+        String patronNombre = "^[A-Za-zºª-ÁÉÍÓÚáéíóúü]+$";
+        String nombreSinFormato = introduceDato("Introduzca el nombre del alumno", entrada, patronNombre);
+        String nombre = nombreSinFormato.substring(0,1).toUpperCase() + nombreSinFormato.substring(1).toLowerCase();
+
+        String apellido1SinFormato = introduceDato("Introduzca el primer apellido", entrada, patronNombre);
+        String apellido1 = apellido1SinFormato.substring(0,1).toUpperCase() + apellido1SinFormato.substring(1).toLowerCase();
+
+        String apellido2SinFormato = introduceDato("Introduzca el segundo apellido", entrada, patronNombre);
+        String apellido2 = apellido2SinFormato.substring(0,1).toUpperCase() + apellido2SinFormato.substring(1).toLowerCase();
+
+        String apellidos = apellido1 + " " + apellido2;
+
+        //Dirección
+        String direccion = introduceDato("Introduzca la dirección del alumno", entrada);
+
+        //email
+        String patronContacto = "^[a-z0-9_]+[\\w-\\.]*\\@\\w+((-\\w+)|(\\w*))\\.[a-z]{2,}$";  //RegEx para validar email
+        String contacto = introduceDato("Introduzca el email del alumno", entrada, patronContacto);
+
+        //Grupo
+        String patronGrupo = "^[1-9]{1,1}[A-Z]{1,1}$"; //Que empiece por un solo dígito y acabe por una sola letra mayúscula
+        String grupo = introduceDato("Introduzca el grupo del alumno = curso + clase (Ej. 4B): ", entrada, patronGrupo);
+
+        //Crear objeto tipo Alumno con los datos
         Alumno miAlumno = new Alumno(nombre, apellidos, direccion, contacto, grupo);
 
 
@@ -73,7 +96,7 @@ public class Boletin {
         //Imprimir título y datos alumno
         System.out.println("\n\n\t\t\t\tBoletín de Calificaciones Trimestral");
 
-        System.out.println(miAlumno.toString());
+        System.out.println(miAlumno);
 
         //Imprimir lugar y fecha
         System.out.println("\n\t\t\t\t\t\t\t\t\t\t\t\tSalamanca, a " + fechaHoraHoy());
@@ -101,9 +124,34 @@ public class Boletin {
         System.out.println("\n\n------------------------------------------------------------------------------------");
     }
 
+
     public static String introduceDato(String mensaje, Scanner entrada) {
         System.out.print(mensaje + ": ");
         return entrada.nextLine();
+    }
+
+    public static boolean busqueda(String patron, String texto){
+        Pattern miPatron = Pattern.compile(patron);
+        Matcher miMatcher = miPatron.matcher(texto);
+        return miMatcher.find();
+    }
+
+    //Sobrecargo el método introduceDato para que si le metes un patrón, lo incluya
+    public static String introduceDato (String mensaje, Scanner entrada, String patron){
+        String textoFinal = null;
+        boolean salir = false;
+
+        while (!salir){
+            System.out.print(mensaje + ": ");
+            String textoPrueba = entrada.nextLine();
+            if(busqueda(patron, textoPrueba)){
+                textoFinal = textoPrueba;
+                salir = true;
+            }else{
+                System.out.println("ERROR - se han detectado caracteres no permitidos");
+            }
+        }
+        return textoFinal;
     }
 
     public static double calculaMedia (double sumaNotas, ArrayList lista){
