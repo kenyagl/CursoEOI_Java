@@ -10,17 +10,22 @@ public class Calificaciones {
         this.nomAsignatura = materia.getNombreAsignatura();
         this.codAsignatura = materia.getCodigoAsignatura();
         this.nota = nota;
-        this.calificacion = calculoCalificacion(nota);
+        this.calificacion = calculoCalificacion();
     }
 
-    public String calculoCalificacion (double nota){
-        if (nota < 5.0){
+    public Calificaciones(double nota) {
+        this.nota = nota;
+        this.calificacion = calculoCalificacion();
+    }
+
+    public String calculoCalificacion() {
+        if (this.nota < 5.0){
             calificacion = "    Suspenso"; //los espacios raros son para que quede bonito al imprimir por consola
-        }else if(nota < 7.0){
+        }else if(this.nota < 7.0){
             calificacion = "    Aprobado";
-        }else if(nota < 9.0){
+        }else if(this.nota < 9.0){
             calificacion = "    Notable";
-        }else if(nota < 10.0){
+        }else if(this.nota < 10.0){
             calificacion = "    Sobresaliente";
         }else{
             calificacion = "Matrícula de honor";
