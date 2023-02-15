@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class Boletin {
     public static void main(String[] args) {
         //Datos del centro
-        String nomCentro = negrita("Centro de Enseñanzas Tecnológicas");
+        String nomCentro = "Centro de Enseñanzas Tecnológicas";
         String dirCentro = "Marqués de Cubas, 45 - 37001 Salamanca";
         String telfCentro = "923225566";
         String correoCentro = "contacto@cet.es";
@@ -35,6 +35,8 @@ public class Boletin {
 
         //Dirección
         String direccion = introduceDato(cambiarColor("\nIntroduzca la dirección del alumno", Colores.BLUE), entrada);
+        //Hay demasiadas variaciones de direcciones para definir un patrón - o por lo menos a mí no se me occuren
+        //TODO investigar esto
 
         //email
         String patronContacto = "^[a-z0-9_]+[\\w-\\.]*\\@\\w+((-\\w+)|(\\w*))\\.[a-z]{2,}$";  //RegEx para validar email
@@ -104,7 +106,8 @@ public class Boletin {
         System.out.println("------------------------------------------------------------------------------------");
 
         //Imprimir datos del centro
-        System.out.println("\n" + nomCentro + "\n" + dirCentro + "\nTel. " + telfCentro + " - " + correoCentro);
+        System.out.println(negrita("\n" + nomCentro));
+        System.out.println(dirCentro + "\nTel. " + telfCentro + " - " + correoCentro);
 
         //Imprimir título y datos alumno
         System.out.println(negrita("\n\n\t\t\t\tBoletín de Calificaciones Trimestral"));
@@ -153,7 +156,7 @@ public class Boletin {
     }
 
     public static String negrita(String texto) {
-        return "\033[0;1m" + texto;
+        return "\033[0;1m" + texto + Colores.RESET.getCodColor();
     }
 
     //Sobrecargo el método introduceDato para que si le metes un patrón, lo incluya
