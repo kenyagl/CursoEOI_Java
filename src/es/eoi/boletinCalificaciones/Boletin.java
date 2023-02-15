@@ -1,10 +1,9 @@
 package es.eoi.boletinCalificaciones;
 
-import java.text.DateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
 public class Boletin {
     public static void main(String[] args) {
@@ -27,31 +26,41 @@ public class Boletin {
 
         //Listado de notas por asignatura
         boolean seguir = true;
-        Materias materia;
+        Materias materia = null;
         double nota;
         ArrayList<Calificaciones> listaCalificaciones = new ArrayList<>();
 
         while (seguir) {
-            int codigo = Integer.parseInt(introduceDato("Introduzca el código de la asignatura (00 -> salir) " +
+            String codigo = introduceDato("Introduzca el código de la asignatura (00 -> salir) " +
                     "\n25 -> Matemáticas" +
                     "\n43 -> Física" +
                     "\n44 -> Química" +
                     "\n67 -> Filosofía" +
-                    "\n88 -> Historia", entrada));
-            if (codigo == 00) {
+                    "\n88 -> Historia", entrada);
+            if (codigo.equals("00")) {
                 seguir = false;
             }else{
+                boolean err = false;
                 switch (codigo) {
-                    case 25 -> materia = Materias.MATEMATICAS;
-                    case 43 -> materia = Materias.FISICA;
-                    case 44 -> materia = Materias.QUIMICA;
-                    case 67 -> materia = Materias.FILOSOFIA;
-                    case 88 -> materia = Materias.HISTORIA;
-                    default -> materia = Materias.MATEMATICAS; //PREGUNTA: ¿esto se podría hacer con un try-catch? Para no poner una asignatura aleatoria
+                    case "25" -> materia = Materias.MATEMATICAS;
+                    case "43" -> materia = Materias.FISICA;
+                    case "44" -> materia = Materias.QUIMICA;
+                    case "67" -> materia = Materias.FILOSOFIA;
+                    case "88" -> materia = Materias.HISTORIA;
+                    default -> err = true;
                 }
-                nota = Double.parseDouble(introduceDato("Introduzca la nota para la asignatura de " + materia.getNombreAsignatura(), entrada));
-                Calificaciones lineaCalificacion = new Calificaciones(nota, materia);
-                listaCalificaciones.add(lineaCalificacion);
+                if (!err){
+                    boolean notaValida = true;
+                    nota = Double.parseDouble(introduceDato("Introduzca la nota para la asignatura de " + materia.getNombreAsignatura(), entrada));
+                    if(nota > 10 | nota < 0){
+                        notaValida = false;
+                        System.out.println("ERROR en la nota - Introduzca un número entre 0 y 10");
+                    }
+                    if(notaValida) {
+                        Calificaciones lineaCalificacion = new Calificaciones(nota, materia);
+                        listaCalificaciones.add(lineaCalificacion);
+                    }
+                }
             }
         }
         entrada.close();
@@ -87,7 +96,7 @@ public class Boletin {
         String calificacionFinal = calculoCalificacion(notaMedia);
         System.out.println("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tCalificación: " + calificacionFinal);
 
-        //PREGUNTA: ¿Se pueden poner textos en negrita/más grandes por consola?
+        //AMPLIAR: Poner colores + ¿se pueden poner textos en negrita/más grandes por consola?
 
         System.out.println("\n\n------------------------------------------------------------------------------------");
     }
@@ -103,7 +112,7 @@ public class Boletin {
 
     public static String calculoCalificacion (double nota){
         //PREGUNTA: esto es un copia-pega de la clase "calificaciones". ¿Cómo hago para usarlo aquí?
-        //He intentado importarlo pero seguía sin funcionar
+        //He intentado importarlo pero seguía sin funcionar - investigaré
         String calificacion;
 
         if (nota < 5.0){
@@ -121,13 +130,9 @@ public class Boletin {
         return calificacion;
     }
 
-    public static String fechaHoraHoy (){
-        Locale locale = new Locale("es", "ES");
-        DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
-        DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.DEFAULT, locale);
-        String fecha = dateFormat.format(new Date());
-        String hora = timeFormat.format(new Date());
-
-        return fecha + ", " + hora;
+    public static String fechaHoraHoy(){
+        LocalDateTime objetoFechaHora = LocalDateTime.now();
+        DateTimeFormatter formatoFechaHora = DateTimeFormatter.ofPattern("dd/MMM/yy, kk:mm:ss");
+        return objetoFechaHora.format(formatoFechaHora);
     }
 }
