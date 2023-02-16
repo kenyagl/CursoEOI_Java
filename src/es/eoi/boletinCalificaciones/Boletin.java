@@ -22,29 +22,29 @@ public class Boletin {
         System.out.println(negrita(cambiarColor("1) Datos del alumno", Colores.BLUE)));
 
         String patronNombre = "^[A-Za-zºª-ÁÉÍÓÚáéíóúü]{2,}+$"; //Solo incluye los caracteres que pueden estar en un nombre
-        String nombreSinFormato = introduceDato(cambiarColor("\nIntroduzca el nombre del alumno", Colores.BLUE), entrada, patronNombre);
+        String nombreSinFormato = introduceDato("\nIntroduzca el nombre del alumno", entrada, patronNombre, Colores.BLUE);
         String nombre = nombreSinFormato.substring(0, 1).toUpperCase() + nombreSinFormato.substring(1).toLowerCase();
 
-        String apellido1SinFormato = introduceDato(cambiarColor("Introduzca el primer apellido", Colores.BLUE), entrada, patronNombre);
+        String apellido1SinFormato = introduceDato("Introduzca el primer apellido", entrada, patronNombre, Colores.BLUE);
         String apellido1 = apellido1SinFormato.substring(0, 1).toUpperCase() + apellido1SinFormato.substring(1).toLowerCase();
 
-        String apellido2SinFormato = introduceDato(cambiarColor("Introduzca el segundo apellido", Colores.BLUE), entrada, patronNombre);
+        String apellido2SinFormato = introduceDato("Introduzca el segundo apellido", entrada, patronNombre, Colores.BLUE);
         String apellido2 = apellido2SinFormato.substring(0, 1).toUpperCase() + apellido2SinFormato.substring(1).toLowerCase();
 
         String apellidos = apellido1 + " " + apellido2;
 
         //Dirección
-        String direccion = introduceDato(cambiarColor("\nIntroduzca la dirección del alumno", Colores.BLUE), entrada);
-        //Hay demasiadas variaciones de direcciones para definir un patrón - o por lo menos a mí no se me occuren
+        String direccion = introduceDato("\nIntroduzca la dirección del alumno", entrada, Colores.BLUE);
+        //Hay demasiadas variaciones de direcciones para definir un patrón - o por lo menos a mí no se me ocurren
         //TODO investigar esto
 
         //email
         String patronContacto = "^[a-z0-9_]+[\\w-\\.]*\\@\\w+((-\\w+)|(\\w*))\\.[a-z]{2,}$";  //RegEx para validar email
-        String contacto = introduceDato(cambiarColor("\nIntroduzca el email del alumno", Colores.BLUE), entrada, patronContacto);
+        String contacto = introduceDato("\nIntroduzca el email del alumno", entrada, patronContacto, Colores.BLUE);
 
         //Grupo
         String patronGrupo = "^[1-9]{1,1}[A-G]{1,1}$"; //Que empiece por un solo dígito y acabe por una sola letra mayúscula
-        String grupo = introduceDato(cambiarColor("\nIntroduzca el grupo del alumno = curso + clase (Ej. 4B): ", Colores.BLUE), entrada, patronGrupo);
+        String grupo = introduceDato("\nIntroduzca el grupo del alumno: curso(1-9) y clase(A-G) (Ej. 4B)", entrada, patronGrupo, Colores.BLUE);
 
         //Crear objeto tipo Alumno con los datos
         Alumno miAlumno = new Alumno(nombre, apellidos, direccion, contacto, grupo);
@@ -59,12 +59,12 @@ public class Boletin {
         System.out.println(negrita(cambiarColor("\n\n2) Datos de las asignaturas", Colores.PURPLE)));
 
         while (seguir) {
-            String codigo = introduceDato(cambiarColor("\nIntroduzca el código de la asignatura (00 -> salir) " +
+            String codigo = introduceDato("\nIntroduzca el código de la asignatura (00 -> salir) " +
                     "\n25 -> Matemáticas" +
                     "\n43 -> Física" +
                     "\n44 -> Química" +
                     "\n67 -> Filosofía" +
-                    "\n88 -> Historia", Colores.PURPLE), entrada);
+                    "\n88 -> Historia", entrada, Colores.PURPLE);
             if (codigo.equals("00")) {
                 seguir = false;
             } else {
@@ -102,7 +102,7 @@ public class Boletin {
             }
         }
         entrada.close();
-
+        System.out.println("\n\n\n\n\n\n\n\n");
         System.out.println("------------------------------------------------------------------------------------");
 
         //Imprimir datos del centro
@@ -131,12 +131,13 @@ public class Boletin {
         //Calcular e imprimir media y calificación finales
 
         double notaMedia = calculaMedia(sumaNotas, listaCalificaciones);
-        System.out.printf(negrita("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tNota media:   %.1f"), notaMedia);
+        System.out.printf(negrita("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tNota media:\t\t\t%.1f"), notaMedia);
         Calificaciones notaFinal = new Calificaciones(notaMedia); //Creo un objeto tipo calificaciones para usar su metodo
         String calificacionFinal = notaFinal.calculoCalificacion();
         System.out.println(negrita("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tCalificación: " + calificacionFinal));
 
         System.out.println("\n\n------------------------------------------------------------------------------------");
+        System.out.println("\n\n\n\n\n\n\n\n");
     }
 
 
@@ -159,13 +160,37 @@ public class Boletin {
         return "\033[0;1m" + texto + Colores.RESET.getCodColor();
     }
 
-    //Sobrecargo el método introduceDato para que si le metes un patrón, lo incluya
+    //Sobrecargo introduceDato con nuevo parámetro: color
+    public static String introduceDato(String mensaje, Scanner entrada, Colores colorMsj) {
+        System.out.print(cambiarColor(mensaje + ": ", colorMsj));
+        return entrada.nextLine();
+    }
+
+    //Sobrecargo el método introduceDato con un nuevo parámetro: el patrón
     public static String introduceDato(String mensaje, Scanner entrada, String patron) {
         String textoFinal = null;
         boolean salir = false;
 
         while (!salir) {
             System.out.print(mensaje + ": ");
+            String textoPrueba = entrada.nextLine();
+            if (busqueda(patron, textoPrueba)) {
+                textoFinal = textoPrueba;
+                salir = true;
+            } else {
+                System.out.println(cambiarColor("ERROR - se han detectado caracteres no permitidos", Colores.RED));
+            }
+        }
+        return textoFinal;
+    }
+
+    //Otra sobrecarga pero incluyendo poner el mensaje de un color Y el patrón
+    public static String introduceDato(String mensaje, Scanner entrada, String patron, Colores colorMsj) {
+        String textoFinal = null;
+        boolean salir = false;
+
+        while (!salir) {
+            System.out.print(cambiarColor(mensaje + ": ", colorMsj));
             String textoPrueba = entrada.nextLine();
             if (busqueda(patron, textoPrueba)) {
                 textoFinal = textoPrueba;
