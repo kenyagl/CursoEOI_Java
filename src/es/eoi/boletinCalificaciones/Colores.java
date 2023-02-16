@@ -28,6 +28,6 @@ public enum Colores {
     }
 
     public static String negrita(String texto) {
-        return "\033[0;1m" + texto + Colores.RESET.getCodColor();
+        return BOLD.getCodColor() + texto + Colores.RESET.getCodColor();
     }
 }
