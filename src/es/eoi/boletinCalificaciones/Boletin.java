@@ -19,7 +19,7 @@ public class Boletin {
         Scanner entrada = new Scanner(System.in);
 
         //Nombre y apellidos
-        System.out.println(negrita(cambiarColor("1) Datos del alumno", Colores.BLUE)));
+        System.out.println(Colores.negrita(Colores.cambiarColor("1) Datos del alumno", Colores.BLUE)));
 
         String patronNombre = "^[A-Za-zºª-ÁÉÍÓÚáéíóúü]{2,}+$"; //Solo incluye los caracteres que pueden estar en un nombre
         String nombreSinFormato = introduceDato("\nIntroduzca el nombre del alumno", entrada, patronNombre, Colores.BLUE);
@@ -56,7 +56,7 @@ public class Boletin {
         double nota = 0;
         ArrayList<Calificaciones> listaCalificaciones = new ArrayList<>();
 
-        System.out.println(negrita(cambiarColor("\n\n2) Datos de las asignaturas", Colores.PURPLE)));
+        System.out.println(Colores.negrita(Colores.cambiarColor("\n\n2) Datos de las asignaturas", Colores.PURPLE)));
 
         while (seguir) {
             String codigo = introduceDato("\nIntroduzca el código de la asignatura (00 -> salir) " +
@@ -77,21 +77,21 @@ public class Boletin {
                     case "88" -> materia = Materias.HISTORIA;
                     default -> {
                         err = true;
-                        System.out.println(cambiarColor("\nERROR - introduzca un código válido", Colores.RED));
+                        System.out.println(Colores.cambiarColor("\nERROR - introduzca un código válido", Colores.RED));
                     }
                 }
                 if (!err) {
                     boolean notaValida = false;
                     while (!notaValida) {
                         try {
-                            nota = Double.parseDouble(introduceDato(cambiarColor("\nIntroduzca la nota para la asignatura de " + materia.getNombreAsignatura(), Colores.PURPLE), entrada));
+                            nota = Double.parseDouble(introduceDato(Colores.cambiarColor("\nIntroduzca la nota para la asignatura de " + materia.getNombreAsignatura(), Colores.PURPLE), entrada));
                             notaValida = true;
                         } catch (Exception e) {
-                            System.out.println(cambiarColor("\nERROR en la nota - Introduzca un número entre 0 y 10", Colores.RED));
+                            System.out.println(Colores.cambiarColor("\nERROR en la nota - Introduzca un número entre 0 y 10", Colores.RED));
                         }
                         if (nota > 10 | nota < 0) {
                             notaValida = false;
-                            System.out.println(cambiarColor("\nERROR en la nota - Introduzca un número entre 0 y 10", Colores.RED));
+                            System.out.println(Colores.cambiarColor("\nERROR en la nota - Introduzca un número entre 0 y 10", Colores.RED));
                         }
                     }
                     if (notaValida) {
@@ -106,11 +106,11 @@ public class Boletin {
         System.out.println("------------------------------------------------------------------------------------");
 
         //Imprimir datos del centro
-        System.out.println(negrita("\n" + nomCentro));
+        System.out.println(Colores.negrita("\n" + nomCentro));
         System.out.println(dirCentro + "\nTel. " + telfCentro + " - " + correoCentro);
 
         //Imprimir título y datos alumno
-        System.out.println(negrita("\n\n\t\t\t\tBoletín de Calificaciones Trimestral"));
+        System.out.println(Colores.negrita("\n\n\t\t\t\tBoletín de Calificaciones Trimestral"));
 
         System.out.println(miAlumno.toString());
 
@@ -120,7 +120,7 @@ public class Boletin {
         //Imprimir calificaciones individuales
         double sumaNotas = 0;
 
-        System.out.println(negrita("\n\t\t\t\t\t\tCALIFICACIONES"));
+        System.out.println(Colores.negrita("\n\t\t\t\t\t\tCALIFICACIONES"));
         System.out.println("\n\t\tCod\t\tAsignatura\t\tNota\t\tCalificación\n");
 
         for (Calificaciones lineaCalificacion : listaCalificaciones) {
@@ -131,16 +131,17 @@ public class Boletin {
         //Calcular e imprimir media y calificación finales
 
         double notaMedia = calculaMedia(sumaNotas, listaCalificaciones);
-        System.out.printf(negrita("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tNota media:\t\t\t%.1f"), notaMedia);
+        System.out.printf(Colores.negrita("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tNota media:\t\t\t%.1f"), notaMedia);
         Calificaciones notaFinal = new Calificaciones(notaMedia); //Creo un objeto tipo calificaciones para usar su metodo
         String calificacionFinal = notaFinal.calculoCalificacion();
-        System.out.println(negrita("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tCalificación: " + calificacionFinal));
+        System.out.println(Colores.negrita("\n\t\t\t\t\t\t\t\t\t\t\t\t\t\tCalificación: " + calificacionFinal));
 
         System.out.println("\n\n------------------------------------------------------------------------------------");
         System.out.println("\n\n\n\n\n\n\n\n");
     }
 
 
+    //MÉTODOS:
     public static String introduceDato(String mensaje, Scanner entrada) {
         System.out.print(mensaje + ": ");
         return entrada.nextLine();
@@ -152,17 +153,9 @@ public class Boletin {
         return miMatcher.find();
     }
 
-    public static String cambiarColor(String texto, Colores color) {
-        return color.getCodColor() + texto + Colores.RESET.getCodColor();
-    }
-
-    public static String negrita(String texto) {
-        return "\033[0;1m" + texto + Colores.RESET.getCodColor();
-    }
-
     //Sobrecargo introduceDato con nuevo parámetro: color
     public static String introduceDato(String mensaje, Scanner entrada, Colores colorMsj) {
-        System.out.print(cambiarColor(mensaje + ": ", colorMsj));
+        System.out.print(Colores.cambiarColor(mensaje + ": ", colorMsj));
         return entrada.nextLine();
     }
 
@@ -178,7 +171,7 @@ public class Boletin {
                 textoFinal = textoPrueba;
                 salir = true;
             } else {
-                System.out.println(cambiarColor("ERROR - se han detectado caracteres no permitidos", Colores.RED));
+                System.out.println(Colores.cambiarColor("ERROR - se han detectado caracteres no permitidos", Colores.RED));
             }
         }
         return textoFinal;
@@ -190,13 +183,13 @@ public class Boletin {
         boolean salir = false;
 
         while (!salir) {
-            System.out.print(cambiarColor(mensaje + ": ", colorMsj));
+            System.out.print(Colores.cambiarColor(mensaje + ": ", colorMsj));
             String textoPrueba = entrada.nextLine();
             if (busqueda(patron, textoPrueba)) {
                 textoFinal = textoPrueba;
                 salir = true;
             } else {
-                System.out.println(cambiarColor("ERROR - se han detectado caracteres no permitidos", Colores.RED));
+                System.out.println(Colores.cambiarColor("ERROR - se han detectado caracteres no permitidos", Colores.RED));
             }
         }
         return textoFinal;

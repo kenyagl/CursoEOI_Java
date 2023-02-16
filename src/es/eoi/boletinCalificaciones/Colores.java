@@ -9,7 +9,9 @@ public enum Colores {
     BLUE ("\u001B[34m"),
     PURPLE ("\u001B[35m"),
     CYAN ("\u001B[36m"),
-    WHITE ("\u001B[37m");
+    WHITE ("\u001B[37m"),
+
+    BOLD ("\033[0;1m");
 
     private final String codColor;
 
@@ -19,5 +21,13 @@ public enum Colores {
 
     public String getCodColor() {
         return codColor;
+    }
+
+    public static String cambiarColor(String texto, Colores color) {
+        return color.getCodColor() + texto + Colores.RESET.getCodColor();
+    }
+
+    public static String negrita(String texto) {
+        return "\033[0;1m" + texto + Colores.RESET.getCodColor();
     }
 }
